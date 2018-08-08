@@ -1,0 +1,7 @@
+---
+# The variables file used by the playbooks in the webservers group.
+
+httpd_port: 80
+worker_processes: 1
+worker_connections: 1024
+max_open_files: 65506

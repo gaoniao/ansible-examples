@@ -1,0 +1,32 @@
+---
+
+- name: Install MySQL
+  yum: name={{ item }} state=present
+  with_items:
+    - mysql
+    - MySQL-python
+    - libselinux-python
+    - libsemanage-python
+
+- name: Create MySQL configuration file
+  template: src=my.cnf.j2 dest=/etc/my.cnf
+  notify: restart mysql
+
+- name: Start MySQL
+  service: name=mysqld state=started enabled=yes
+
+- name: Create Application DB
+  mysql_db: login_user=root login_password=3G2win.com
+            name={{ dbname }} state=present
+
+- name: Create Application DB User
+  mysql_user: login_user=root login_password=3G2win.com
+              name={{ dbuser }} password={{ userpasswd }}
+
+- name: Add dbservers iptables rule
+  iptables: action=insert table=filter chain=INPUT
+            protocol=tcp  destination_port={{ mysql_port }}
+            source={{ web_server }} jump=ACCEPT
+            comment="Accept MySQL connections."
+  notify: restart iptables
+  tags: iptables

@@ -1,0 +1,35 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+
+- name: Close the selinux
+  selinux: conf=/etc/selinux/config state=disabled
+
+- name: Close the firewalld
+  service: name=firewalld state=stopped enabled=no
+
+- name: Configure yum source
+  yum_repository: name=lnmp baseurl=http://192.168.198.21/lnmp
+                  description="lnmp yum" enabled=1
+                  gpgcheck=0 state=present
+
+- name: Install iptables
+  yum: name={{ item }} state=present
+  with_items:
+    - iptables-services
+    - iptables
+  tags: iptables
+
+- name: Start the iptables
+  service: name=iptables state=started
+
+- name: Install ntp
+  yum: name=ntp state=present
+  tags: ntp
+
+- name: Configure ntp file
+  template: src=ntp.conf.j2 dest=/etc/ntp.conf
+  tags: ntp
+  notify: restart ntp
+
+- name: Start the ntp service
+  service: name=ntpd enabled=yes state=started

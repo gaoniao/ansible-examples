@@ -1,0 +1,7 @@
+---
+# Variables listed here are applicable to all host groups
+
+ntp_server: 192.168.198.21
+
+db_server: 192.168.198.22
+web_server: 192.169.198.23

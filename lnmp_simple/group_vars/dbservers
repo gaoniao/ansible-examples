@@ -1,0 +1,8 @@
+---
+# The variables file used by the playbooks in the dbservers group.
+
+mysql_service: mysqld
+mysql_port: 3306
+dbuser: emm_user
+dbname: emm_db
+userpasswd: 3G2win.com
