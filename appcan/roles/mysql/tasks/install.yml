@@ -1,0 +1,56 @@
+---
+# Install  and initialize mysql57 in RedHat/CentOS.
+
+- name: Install the mysql
+  yum: name={{ packages }} state=present
+  vars:
+    packages: '{{ mysql_packages }}'
+
+- name: Ensure mysql server is started
+  service: name=mysqld state=started
+
+- name: Test database connection
+  shell: mysql -P{{ mysql_port }} -u{{ mysql_root_user }} -p{{ mysql_root_pass }} -e "use mysql;"
+  register: mysql_connect_result
+  ignore_errors: True
+
+# Initialize the mysql root password.
+- block:
+  - name: Skip grant tables
+    blockinfile:
+      path: '/etc/my.cnf'
+      block: 'skip-grant-tables'
+      marker: '#{mark} skip grant tables'
+      insertafter: \[mysqld\]
+      state: present
+    notify: restart mysql
+
+  - meta: flush_handlers
+
+  - name: Set the mysql root temporary password
+    shell: >
+      mysql -u {{ mysql_root_user }} -e "use mysql;
+      update mysql.user set authentication_string=password('{{ mysql_root_pass }}') where user='{{ mysql_root_user }}';
+      flush privileges;"
+
+  - name: Modify Login rule
+    shell: >
+      mysql -P {{ mysql_port }} -u root -p'{{ mysql_root_pass }}' -e
+      "use mysql;update user set host = '%' where user ='{{ mysql_root_user }}';flush privileges;"
+
+  - name: Delete skip grant tables configuration
+    blockinfile:
+      path: '/etc/my.cnf'
+      marker: '#{mark} skip grant tables'
+      state: absent
+    notify: restart mysql
+
+  - meta: flush_handlers
+
+  - name: Set the mysql root permanent password
+    shell: >
+      mysql -P {{ mysql_port }} -u{{ mysql_root_user }} -p{{ mysql_root_pass }} --connect-expired-password
+      -e "SET PASSWORD = PASSWORD('{{ mysql_root_pass }}');"
+  when: mysql_connect_result.rc != 0
+  tags: reset_mysql_password
+

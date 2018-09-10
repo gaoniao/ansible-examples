@@ -1,0 +1,17 @@
+---
+
+- name: Import installation tasks
+  import_tasks: install.yml
+  tags: mysql
+
+- name: Import configuration tasks
+  import_tasks: configure.yml
+  tags: mysql
+
+- name: Import replcation tasks
+  import_tasks: replication.yml
+  tags: mysql
+
+- name: Import init databases tasks
+  import_tasks: databases.yml
+  tags: mysql

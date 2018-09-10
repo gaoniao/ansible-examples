@@ -1,0 +1,6 @@
+---
+
+- name: Install redis
+  yum: name={{ packages }} state=present
+  vars:
+    packages: '{{ redis_packages }}'

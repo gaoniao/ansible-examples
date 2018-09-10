@@ -1,0 +1,49 @@
+---
+
+- name: Enusre glusterfs service is running
+  service:
+    name: 'glusterd'
+    state: started
+    enabled: yes
+
+- name: creating brick folders
+  file:
+    path: '{{ glusterfs_brick_path }}/{{ item.name }}'
+    owner: '{{ item.owner }}'
+    group: '{{ item.group }}'
+    state: directory
+  with_items: '{{ glusterfs_create_bricks }}'
+
+- block:
+  - name: Get gluster vloumes
+    command: "gluster volume list"
+    register: gluster_volumes
+    check_mode: no
+    changed_when: false
+
+  - name: Get gluster peers
+    command: "gluster peer status"
+    register: gluster_peers
+    check_mode: no
+    changed_when: false
+
+  - name: Connecting gluster peers
+    gluster_peer:
+      state: present
+      nodes: '{{ item }}'
+      force: '{{ glusterfs_peer_force_create }}'
+    with_items: '{{ groups["glusterfs-server"][1:] }}'
+    when:  item not in gluster_peers.stdout
+
+  - name: Create gluster volume
+    gluster_volume:
+      state: present
+      name: '{{ item.name }}'
+      bricks: '{{ glusterfs_brick_path }}{{ item.name }}'
+      replicas: '{{ groups["glusterfs-server"]|length }}'
+      cluster: '{% for host in groups["glusterfs-server"] %}{{ host }}{% if not loop.last %},{% endif %}{% endfor %}'
+      rebalance: '{{ glusterfs_volume_rebalance }}'
+      force: '{{ glusterfs_volume_force_create }}'
+    with_items: '{{ glusterfs_create_bricks }}'
+    when: item.name not in gluster_volumes.stdout
+  when: inventory_hostname == glusterfs_server_master

@@ -1,0 +1,17 @@
+---
+
+- name: Create emm user
+  copy: src={{ item }} dest=/opt/
+  with_items:
+    - 'emm_db_create.sql'
+    - 'emm_db_init.sql'
+
+- name: Create emm db
+  shell: 'mysql -P{{ mysql_port }} -u{{ mysql_root_user }} -p{{ mysql_root_pass }} < /opt/emm_db_create.sql'
+  run_once: true
+  ignore_errors: True
+
+- name: Init emm db
+  shell:  'mysql -D emm_db -P{{ mysql_port }} -u{{ mysql_root_user }} -p{{ mysql_root_pass }} < /opt/emm_db_init.sql'
+  run_once: true
+  ignore_errors: True

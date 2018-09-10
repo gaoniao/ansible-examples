@@ -1,0 +1,6 @@
+---
+
+- name: Install MongoDB package
+  yum: name={{ packages }} state=present
+  vars:
+    packages: '{{ mongodb_packages }}'

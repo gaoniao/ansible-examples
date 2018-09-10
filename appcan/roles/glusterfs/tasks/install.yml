@@ -1,0 +1,25 @@
+---
+
+- block:
+  - name: Install glusterfs server package
+    yum: name={{ packages }} state=present
+    vars:
+      packages: '{{ glusterfs_server_packages[0] }}'
+
+  - name: Install glusterfs server package
+    yum: name={{ packages }} state=present
+    vars:
+      packages: '{{ glusterfs_server_packages[1:] }}'
+  when: inventory_hostname in groups["glusterfs-server"]
+
+- block:
+  - name: Install glusterfs client package
+    yum: name={{ packages }} state=present
+    vars:
+      packages: '{{ glusterfs_client_packages[0] }}'
+
+  - name: Install glusterfs client package
+    yum: name={{ packages }} state=present
+    vars:
+      packages: '{{ glusterfs_client_packages[1:] }}'
+  when: inventory_hostname in groups["glusterfs-client"]

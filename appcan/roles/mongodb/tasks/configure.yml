@@ -1,0 +1,60 @@
+---
+
+- name: Enuser mongodb group
+  group:
+    name: '{{ mongodb_group }}'
+    gid: '{{ mongodb_gid }}'
+    state: present
+
+- name: Enuser mongodb user
+  user:
+    name: '{{ mongodb_user }}'
+    group: '{{ mongodb_group}}'
+    uid: '{{ mongodb_uid }}'
+    home: '{{ mongodb_db_path }}'
+    comment: 'mongod'
+    shell: '/bin/false'
+    state: present
+
+- name: Ensure mongodb directory is exist
+  file:
+    path: '{{ item }}'
+    state: directory
+    owner: '{{ mongodb_user }}'
+    group: '{{ mongodb_group }}'
+  with_items:
+    - '{{ mongodb_db_path }}'
+    - '{{ mongodb_log_path }}'
+    - '{{ mongodb_pidfile_path }}'
+
+- name: Create keyFile
+  copy:
+    dest: "{{ mongodb_security_keyfile }}"
+    content: "{{ mongodb_keyfile_content }}"
+    owner: "{{ mongodb_user }}"
+    group: "root"
+    mode: 0600
+  when: (mongodb_replication_enabled
+        and  mongodb_security_authorization == 'enabled')
+
+- name: Copy mongodb configuration
+  template:
+    src: mongod.conf.j2
+    dest: '{{ mongodb_config_file }}'
+    owner: root
+    group: root
+    mode: 0644
+    force: '{{ overwrite_mongodb_configuration }}'
+  notify: restart mongodb
+
+- meta: flush_handlers
+
+- name: Ensure service is started
+  service: name=mongod state=started
+
+- name: Ensure mongodb port is listening
+  wait_for:
+    host: '{{ item }}'
+    port: '{{ mongodb_net_port }}'
+    timeout: 120
+  with_items: "{{ mongodb_net_bindip.split(',') | map('replace', '0.0.0.0', '127.0.0.1') | list }}"

@@ -1,0 +1,55 @@
+---
+
+- name: Ensure mysql directory is exist
+  file:
+    path: '{{ item }}'
+    state: directory
+    owner: mysql
+    group: mysql
+  with_items:
+    - '{{ mysql_datadir }}'
+    - '{{ mysql_logdir }}'
+
+- name: Ensure mysql user is exist
+  user:
+    name: mysql
+    group: mysql
+    home: '{{ mysql_datadir }}'
+    uid: '27'
+    comment: 'MySQL Server'
+    shell: '/bin/false'
+    state: present
+
+- name: Set mysql role fact
+  set_fact:
+    mysql_replication_role: >-
+      {%- for host in play_hosts -%}
+        {%- if host == inventory_hostname -%}
+          {%- if loop.index0 == 0 -%}
+            master
+          {%- elif loop.index0 == 1 -%}
+            slave
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+- name: Copy mysql configuration
+  template:
+    src: my.cnf.j2
+    dest: '{{ mysql_config_file }}'
+    owner: root
+    group: root
+    mode: 0644
+    force: '{{ overwrite_mysql_configuration }}'
+  notify: restart mysql
+
+- meta: flush_handlers
+
+- name: Set ownership on slow query log file
+  file:
+    path: '{{ mysql_slow_query_log_file }}'
+    state: touch
+    owner: mysql
+    group: mysql
+    mode: 0640
+  when: mysql_slow_query_log_enabled

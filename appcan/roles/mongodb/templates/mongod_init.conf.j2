@@ -1,0 +1,56 @@
+net:
+  port: {{ mongodb_net_port }}
+  bindIp: 127.0.0.1
+  ipv6: {{ mongodb_net_ipv6_enabled | to_nice_json }}
+  maxIncomingConnections: {{ mongodb_net_maxconns }}
+  unixDomainSocket:
+    enabled: {{ mongodb_net_socket_enabled | to_nice_json }}
+    pathPrefix: {{ mongodb_net_socket_path }}
+    filePermissions: {{ mongodb_net_socket_permissions }}
+  http:
+    enabled: {{ mongodb_net_http_enabled | to_nice_json }}
+  {% if mongodb_net_ssl_enabled and mongodb_net_ssl_pemfile is defined and mongodb_net_ssl_mode is defined -%}
+  ssl:
+    mode: {{ mongodb_net_ssl_mode }}
+    PEMKeyFile: {{ mongodb_net_ssl_pemfile }}.pem
+  {% endif %}
+
+processManagement:
+  fork: {{ mongodb_processmanagement_fork_enabled | to_nice_json }}
+  {% if mongodb_pidfile_path is defined and mongodb_processmanagement_pidfile_path != '' -%}
+  pidFilePath: {{ mongodb_processmanagement_pidfile_path }}
+  {% endif %}
+
+security:
+  authorization: disabled
+
+storage:
+  dbPath: {{ mongodb_storage_dbpath }}
+  engine: {{ mongodb_storage_engine }}
+  journal:
+    enabled: {{ mongodb_storage_journal_enabled | to_nice_json }}
+  {% if mongodb_storage_engine == 'mmapv1' -%}
+  mmapv1:
+    preallocDataFiles: {{ mongodb_storage_mmapv1_prealloc | to_nice_json }}
+    quota:
+      enforced: {{ mongodb_storage_mmapv1_quota_enforced | to_nice_json }}
+      maxFilesPerDB: {{ mongodb_storage_mmapv1_quota_maxfiles }}
+    smallFiles: {{ mongodb_storage_mmapv1_smallfiles | to_nice_json }}
+  {% elif mongodb_storage_engine == 'wiredTiger' -%}
+  wiredTiger:
+    engineConfig:
+      {# cacheSizeGB: {{ mongodb_storage_wiredtiger_cachesize }}  #}
+      directoryForIndexes: {{ mongodb_storage_wiredtiger_dirforindexes | to_nice_json }}
+    indexConfig:
+      prefixCompression: {{ mongodb_storage_wiredtiger_indexconfig | to_nice_json }}
+  {% endif %}
+
+systemLog:
+  verbosity: {{ mongodb_systemlog_verbosity }}
+  quiet: {{ mongodb_systemlog_quiet | to_nice_json }}
+  destination: {{ mongodb_systemlog_destination }}
+  {% if mongodb_systemlog_destination == 'file' -%}
+  logAppend: {{ mongodb_systemlog_logappend | to_nice_json }}
+  logRotate: {{ mongodb_systemlog_logrotate }}
+  path: {{ mongodb_systemlog_path }}
+  {% endif %}

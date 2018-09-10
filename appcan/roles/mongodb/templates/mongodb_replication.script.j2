@@ -1,0 +1,8 @@
+use admin
+config={_id:'{{ mongodb_replication_replset }}',members:[{
+{%- for host in groups.mongodb -%}
+_id:{{ loop.index0 }},host:'{{ host }}:{{ mongodb_net_port }}'
+{%- if arbiteronly is defined and arbiteronly -%},arbiterOnly:true{%- endif -%}
+{%- if not loop.last -%} },{ {%- endif -%}
+{%- endfor -%}}]};
+rs.initiate(config)

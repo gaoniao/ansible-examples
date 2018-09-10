@@ -1,0 +1,72 @@
+[mysqld]
+
+##########Server##########
+port = {{ mysql_port }}
+bind-address = {{ mysql_bind_address }}
+datadir = {{ mysql_datadir }}
+socket = {{  mysql_socket }}
+pid-file = {{ mysql_pid_file }}
+{% if mysql_skip_name_resolve %}
+    skip-name-resolve
+{% endif %}
+{% if mysql_sql_mode %}
+    sql_mode = {{ mysql_sql_mode }}
+{% endif %}
+log_timestamps = {{ log_timestamps }}
+
+##########Replication##########
+{% if mysql_replication_role == 'master' %}
+    server-id = {{ master.server_id }}
+    auto_increment_offset = {{ master.auto_increment_offset }}
+    auto_increment_increment = {{ master.auto_increment_increment }}
+{% elif mysql_replication_role == 'slave' %}
+    server-id = {{ slave.server_id }}
+    auto_increment_offset = {{ slave.auto_increment_offset }}
+    auto_increment_increment = {{ slave.auto_increment_increment }}
+{% endif %}
+log-bin = {{ log_bin }}
+log-bin-index = {{ log_bin_index }}
+binlog_format = {{ binlog_format }}
+log-slave-updates = {{ log_slave_updates }}
+relay-log = {{ relay_log }}
+relay-log-index = {{ relay_log_index }}
+
+{% if ignore_db %}
+    # Not rsync db
+{% for db in ignore_db %}
+    binlog-ignore-db = {{ db }}
+{% endfor %}
+{% endif %}
+
+{% if mysql_slow_query_log_enabled %}
+    # Slow query log configuration.
+    slow_query_log = 1
+    slow_query_log_file = {{ mysql_slow_query_log_file }}
+    long_query_time = {{ mysql_slow_query_time }}
+{% endif %}
+
+##########Limit##########
+symbolic-links = {{ symbolic_links }}
+character-set-server = {{ character_set_server }}
+collation-server = {{ collation_server }}
+init-connect = {{ init_connect }}
+max_connections = {{ max_connections }}
+max_connect_errors = {{ max_connect_errors }}
+wait_timeout = {{ wait_timeout }}
+interactive_timeout = {{ interactive_timeout }}
+log_bin_trust_function_creators = {{ log_bin_trust_function_creators }}
+
+[mysqld_safe]
+log-error = {{ mysql_log_error }}
+pid-file = {{ mysql_pid_file }}
+default-character-set = {{ default_character_set }}
+!includedir {{ mysql_config_include_dir }}
+
+[client]
+{#
+user = {{ mysql_root_user }}
+password = {{ mysql_root_pass }}
+#}
+port = {{ mysql_port }}
+socket = {{ mysql_socket }}
+default-character-set = {{ default_character_set }}

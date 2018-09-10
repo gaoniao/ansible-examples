@@ -1,0 +1,23 @@
+---
+
+- name: Check the local yum source
+  stat: path=/etc/yum.repos.d/local.repo
+  register: local_yum_souce_result
+
+- block:
+    - name: Make dir backup
+      file: path=/etc/yum.repos.d/backup state=directory
+
+    - name: Find net yum source
+      find: paths=/etc/yum.repos.d/ patterns="*.repo"
+      register: net_yum_source
+
+    - name: Disable the net yum source
+      command: mv {{ item.path }} /etc/yum.repos.d/backup
+      with_items: "{{ net_yum_source.files }}"
+
+    - name: Configure the local yum source
+      yum_repository: name=local baseurl=http://{{ yum_source }}/local
+                      description="local yum" enabled=yes
+                      gpgcheck=no state=present
+  when: not local_yum_souce_result.stat.exists

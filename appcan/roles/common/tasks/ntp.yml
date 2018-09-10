@@ -1,0 +1,14 @@
+---
+
+- block:
+  - name: Install ntp
+    yum: name=ntp state=installed
+
+  - name: Configurate ntp file
+    template: src=ntp.conf.j2 dest=/etc/ntp.conf
+    notify: restart ntpd
+
+  - name: Start the ntp services
+    service: name=ntpd state=started enabled=yes
+
+  when: ntp_install == true

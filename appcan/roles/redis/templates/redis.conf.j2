@@ -1,0 +1,116 @@
+### NETWORK ###
+bind {{ redis_bind_interface }}
+protected-mode {{ redis_protected_mode }}
+port {{ redis_port }}
+tcp-backlog {{ redis_tcp_backlog }}
+
+### GENERAL ###
+daemonize {{ redis_daemonize }}
+supervised {{ redis_supervised }}
+pidfile {{ redis_pidfile }}
+logfile {{ redis_logfile }}
+syslog-enabled {{ redis_syslog_enabled }}
+{%if redis_syslog_enabled %}
+syslog-ident {{ redis_syslog_ident }}
+syslog-facility {{ redis_syslog_facility }}
+{% endif %}
+databases {{ redis_databases }}
+
+### SNAPSHOTTING  ###
+{% if  redis_rdb_save_enabled %}
+{% for rule in redis_rdb_save_rules %}
+save {{ rule.second }} {{ rule.key }}
+{% endfor %}
+{% else %}
+save ''
+{% endif %}
+stop-writes-on-bgsave-error {{ redis_stop_writes_on_bgsave_error }}
+rdbcompression {{ redis_rdbcompression }}
+rdbchecksum {{ redis_rdbchecksum }}
+dbfilename {{ redis_dbfilename }}
+dir {{ redis_dbdir }}
+
+### REPLICATION ###
+{% if redis_slave_enabled and redis_replication_role == 'slave' %}
+slaveof {{ redis_master_host }} {{ redis_master_port }}
+{% endif %}
+masterauth {{ redis_masterauth }}
+slave-serve-stale-data {{ redis_slave_serve_stale_data }}
+slave-read-only {{ redis_slave_read_only }}
+repl-diskless-sync {{ redis_repl_diskless_sync }}
+repl-diskless-sync-delay {{ redis_repl_diskless_sync_delay }}
+repl-ping-slave-period {{ redis_repl_ping_slave_period }}
+repl-timeout {{ redis_repl_timeout }}
+repl-disable-tcp-nodelay {{ redis_repl_disable_tcp_nodelay }}
+repl-backlog-size {{ redis_repl_backlog_size }}
+repl-backlog-ttl {{ repl_backlog_ttl }}
+slave-priority {{ redis_slave_priority }}
+min-slaves-to-write {{ redis_min_slaves_to_write }}
+min-slaves-max-lag {{ redis_min_slaves_max_lag }}
+{% if redis_slave_announce %}
+slave-announce-ip {{ redis_slave_announce.ip }}
+slave-announce-port {{ redis_slave_announce.port }}
+{% endif %}
+
+### SECURITY ###
+requirepass {{ redis_requirepass }}
+{% if redis_rename_commands %}
+{% for rename_command in redis_rename_commands %}
+rename-command {{ rename_command.old }} {{ rename_command.new }}
+{% endfor %}
+{% endif %}
+
+### LIMITS ###
+maxclients {{ redis_maxclients }}
+{% if redis_maxmemory %}
+maxmemory {{ redis_maxmemory }}
+{% endif %}
+maxmemory-policy {{ redis_maxmemory_policy }}
+maxmemory-samples {{ redis_maxmemory_samples }}
+
+### APPEND ONLY MODE ###
+{% if redis_aof_enabled %}
+appendonly yes
+appendfilename {{ redis_appendfilename }}
+appendfsync {{ redis_appendfsync }}
+no-appendfsync-on-rewrite {{ redis_no_appendfsync_on_rewrite }}
+auto-aof-rewrite-percentage {{ redis_auto_aof_rewrite_percentage }}
+auto-aof-rewrite-min-size {{ redis_auto_aof_rewrite_min_size }}
+aof-load-truncated {{ redis_aof_load_truncated }}
+{% endif %}
+
+### REDIS CLUSTER  ###
+{% if redis_cluster_enabled %}
+cluster-enabled yes
+cluster-config-file {{ redis_cluster_config_file }}
+cluster-node-timeout {{ redis_cluster_node_timeout }}
+cluster-slave-validity-factor {{ redis_cluster_slave_validity_factor }}
+cluster-migration-barrier {{ redis_cluster_migration_barrier }}
+cluster-require-full-coverage {{ redis_cluster_require_full_coverage }}
+{% endif %}
+
+### SLOW LOG ###
+slowlog-log-slower-than {{ redis_slowlog_log_slower_than }}
+slowlog-max-len {{ redis_slowlog_max_len }}
+
+### LATENCY MONITOR ###
+latency-monitor-threshold {{ redis_latency_monitor_threshold }}
+
+### EVENT NOTIFICATION ###
+notify-keyspace-events {{ redis_notify_keyspace_events }}
+
+### ADVANCED CONFIG ###
+hash-max-ziplist-entries {{ redis_hash_max_ziplist_entries }}
+hash-max-ziplist-value {{ redis_hash_max_ziplist_value }}
+list-max-ziplist-size {{ redis_list_max_ziplist_size }}
+list-compress-depth {{ redis_list_compress_depth }}
+set-max-intset-entries {{ redis_set_max_intset_entries }}
+zset-max-ziplist-entries {{ redis_zset_max_ziplist_entries }}
+zset-max-ziplist-value {{ redis_zset_max_ziplist_value }}
+hll-sparse-max-bytes {{ redis_hll_sparse_max_bytes }}
+activerehashing {{ redis_activerehashing }}
+{% for limit in redis_client_output_buffer_limits %}
+client-output-buffer-limit {{ limit.client }} {{ limit.hard_limit }} {{ limit.soft_limit }} {{ limit.soft_seconds }}
+{% endfor %}
+hz {{ redis_hz }}
+aof-rewrite-incremental-fsync {{ redis_aof_rewrite_incremental_fsync }}

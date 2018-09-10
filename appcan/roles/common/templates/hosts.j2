@@ -1,0 +1,35 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+{{ env1 }} env1.emm env1
+{{ env2 }} env2.emm env2
+{{ env3 }} env3.emm env3
+
+{{ env1 }} zk1 hdp-node1 hdp-master
+{{ env2 }} zk2 hdp-node2 hdp-master-s
+{{ env3 }} zk3 hdp-node3 hdp-third
+
+{{ env1 }} mongo-slave
+{{ env2 }} mongo-arbiter
+{{ env3 }} mongo-master
+
+{{ env1 }} redis-1
+{{ env2 }} redis-2
+{{ env3 }} redis-3
+
+{{ env1 }} mysql-1
+{{ env2 }} mysql-2
+
+{{ env5 }} gfs-node1
+{{ env6 }} gfs-node2
+
+{{ env4 }} im-1
+{{ env5 }} im-2
+
+{{ env4 }} emmin-1
+{{ env5 }} emmin-2
+
+{{ env4 }} push-1
+{{ env5 }} push-2
+
+{{ env6 }} zabbix-server

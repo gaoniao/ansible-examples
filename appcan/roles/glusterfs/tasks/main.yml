@@ -1,0 +1,20 @@
+---
+
+- name: Import installation tasks
+  import_tasks: install.yml
+  tags: glusterfs
+
+- name: Import format disk tasks
+  import_tasks: format_disk.yml
+  tags: glusterfs
+  when: inventory_hostname in groups["glusterfs-server"]
+
+- name: Import configure server tasks
+  import_tasks: configure_server.yml
+  tags: glsuterfs
+  when: inventory_hostname in groups["glusterfs-server"]
+
+- name: Import configure client tasks
+  import_tasks: configure_client.yml
+  tags: glsuterfs
+  when: inventory_hostname in groups["glusterfs-client"]

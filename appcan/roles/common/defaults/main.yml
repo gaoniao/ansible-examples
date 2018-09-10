@@ -1,0 +1,43 @@
+---
+
+# sysctl
+sysctl:
+  - {name: "fs.file-max", value: "655536"}
+  - {name: "vm.overcommit_memory", value: "1"}
+  - {name: "net.core.somaxconn", value: "10240"}
+  - {name: "net.ipv4.tcp_fin_timeout", value: "30"}
+  - {name: "net.netfilter.nf_conntrack_max", value: "655350"}
+  - {name: "net.netfilter.nf_conntrack_tcp_timeout_established", value: "1200"}
+
+# security limits
+limits:
+  - '* - nofile 655350'
+  - '* soft nofile 655350'
+  - '* hard nofile 655350'
+
+# huge page
+transparent_hugepage: never
+
+# timezone
+zoneinfo: {state: "Asia", district: "Shanghai"}
+
+# selinux
+selinux: disabled
+
+# firewall
+firewall: {state: "stopped", enabled: "no"}
+
+# ntp
+ntp_install: ture
+ntp_server: 192.168.198.21
+
+# yum
+yum_source : 192.168.198.21
+
+# hosts
+env1: 192.168.198.21
+env2: 192.168.198.22
+env3: 192.168.198.23
+env4: 192.168.198.21
+env5: 192.168.198.22
+env6: 192.168.198.23

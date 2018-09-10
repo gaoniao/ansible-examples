@@ -1,0 +1,13 @@
+daemonize yes
+protected-mode {{ redis_sentinel_protected_mode }}
+bind {{ redis_sentinel_bind_interface }}
+port {{ redis_sentinel_port }}
+sentinel monitor mymaster {{ redis_master_host }} {{ redis_master_port }} {{ redis_sentinel_quorum }}
+sentinel down-after-milliseconds mymaster {{ redis_down_after_milliseconds }}
+sentinel failover-timeout mymaster {{ redis_sentinel_failover_timeout }}
+sentinel parallel-syncs mymaster {{ redis_sentinel_parallel_syncs }}
+{% if redis_masterauth %}
+sentinel auth-pass mymaster {{ redis_masterauth }}
+{% endif %}
+loglevel {{ redis_sentinel_loglevel }}
+logfile {{ redis_logdir }}/{{ redis_sentinel_logfile }}

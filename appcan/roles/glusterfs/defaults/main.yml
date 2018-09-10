@@ -1,0 +1,35 @@
+---
+
+# Glusterfs packages.
+glusterfs_server_packages:
+  - 'centos-release-gluster'
+  - 'glusterfs-server'
+
+glusterfs_client_packages:
+  - 'centos-release-gluster'
+  - 'glusterfs'
+  - 'glusterfs-fuse'
+
+# Glusterfs path.
+glusterfs_brick_disk: '/dev/sdb'
+glusterfs_brick_path: '/bricks/brick1/'
+
+# Glusterfs roles.
+glusterfs_server_master: '{{ groups["glusterfs-server"][0] }}'
+glusterfs_peer_force_create: false
+
+# Glusterfs vloumes
+glusterfs_create_bricks:
+  - name: 'datastore'
+    owner: 'root'
+    group: 'root'
+glusterfs_volume_force_create: false
+glusterfs_volume_rebalance: false
+
+# Glusterfs clinet.
+glusterfs_client_mounts:
+  - mountpoint: '/opt/test'
+    src: '{{ glusterfs_server_master }}:/datastore'
+    fstype: 'glusterfs'
+    opts: 'defaults,_netdev,log-level=WARNING,log-file=/var/log/gluster.log'
+    state: mounted

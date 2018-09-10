@@ -1,0 +1,22 @@
+---
+
+- name: Import System configuration tasks
+  import_tasks: system.yml
+  tags: system
+
+- name: Import firewall service tasks
+  import_tasks: firewall.yml
+  tags: firewall
+
+- name: Import ntp service tasks
+  import_tasks: ntp.yml
+  tags: ntp
+
+- name: Import yum confiuration tasks
+  import_tasks: yum.yml
+  tags: yum
+
+- name: Import motify hosts file tasks
+  template: src=hosts.j2 dest=/etc/hosts
+  tags: hosts
+

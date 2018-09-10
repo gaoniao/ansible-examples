@@ -1,0 +1,29 @@
+---
+
+- name: Configurate sysctl
+  sysctl: name={{ item.name }} value={{ item.value }} reload=yes
+  with_items: "{{ sysctl }}"
+  tags: sysctl
+
+- name: Configurate limits
+  lineinfile: path=/etc/security/limits.conf line={{ item }}
+  with_items: "{{ limits }}"
+  tags: limits
+
+- name: Configurate transparent huge pages
+  lineinfile: path=/etc/rc.d/rc.local regexp=".*transparent_hugepage.*/{{ item }}"
+              line="echo {{ transparent_hugepage }} > /sys/kernel/mm/transparent_hugepage/{{ item }}"
+              backup=yes create=no state=present
+  with_items:
+    - defrag
+    - enabled
+  notify: enable or disable transparent huge pages
+  tags: hugepage
+
+- name: Close the selinux
+  selinux: conf=/etc/selinux/config state={{ selinux }}
+  tags: selinux
+
+- name: Configurate time zone
+  file: path=/etc/localtime src=/usr/share/zoneinfo/{{ zoneinfo.state }}/{{ zoneinfo.district }}
+

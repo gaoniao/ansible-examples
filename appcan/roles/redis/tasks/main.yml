@@ -1,0 +1,19 @@
+---
+
+- name: Import installation tasks
+  import_tasks: install.yml
+  tags: redis
+
+- name: Import configuration tasks
+  import_tasks: configure.yml
+  tags: redis
+
+- name: Import redis sentinel tasks
+  import_tasks: sentinel.yml
+  when: redis_slave_enabled and redis_sentinel_enabled
+  tags: redis
+
+- name: Import redis cluster tasks
+  import_tasks: cluster.yml
+  when: redis_cluster_enabled
+  tags: redis

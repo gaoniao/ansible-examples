@@ -1,0 +1,10 @@
+---
+
+- name: Enable or disable the iptables (RedHat/CentOS 6)
+  service: name=iptables state={{ firewall.state }} enabled={{ firewall.enabled }}
+  when: ansible_distribution_major_version == "6"
+
+- name: Enable or disable the firewalld
+  service: name=firewalld state={{ firewall.state }} enabled={{ firewall.enabled }}
+  when: ansible_distribution_major_version == "7"
+

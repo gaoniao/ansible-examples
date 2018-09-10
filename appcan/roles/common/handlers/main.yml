@@ -1,0 +1,10 @@
+---
+
+- name: enable or disable transparent huge pages
+  shell: echo {{ transparent_hugepage }} > /sys/kernel/mm/transparent_hugepage/{{ item }}
+  with_items:
+    - defrag
+    - enabled
+
+- name: restart ntpd
+  service: name=ntpd state=restarted

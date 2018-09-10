@@ -1,0 +1,77 @@
+---
+# Mysql packages.
+mysql_packages:
+  - 'mysql'
+  - 'mysql-server'
+  - 'MySQL-python'
+
+
+# Mysql Configuration file settings.
+overwrite_mysql_configuration: yes
+mysql_config_file: '/etc/my.cnf'
+mysql_config_include_dir: '/etc/my.cnf.d'
+
+mysql_replication_master: '192.168.198.22'
+mysql_replication_slave: '192.168.198.23'
+
+# Mysql connection user.
+mysql_root_user: 'root'
+mysql_root_pass: 'GaoPeng.1993'
+
+# Mysql replication user.
+mysql_replication_user: {name: 'db_sync', password: 'GaoPeng.1993'}
+
+# Mysql connection settings.
+mysql_port: '3306'
+mysql_bind_address: '0.0.0.0'
+mysql_skip_name_resolve: no
+mysql_datadir: '/var/lib/mysql'
+mysql_pid_file: '/var/run/mysqld/mysqld.pid'
+mysql_socket: '/var/lib/mysql/mysql.sock'
+mysql_sql_mode: 'NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES'
+
+# Logging settings.
+# mysql_log: ''
+mysql_logdir: '/var/log/mysql'
+mysql_log_error: '/var/log/mysql/mysql.err'
+log_timestamps: 'SYSTEM'
+# mysql_syslog_tag: mysql
+
+# Slow query log settings.
+mysql_slow_query_log_enabled: yes
+mysql_slow_query_time: '2'
+mysql_slow_query_log_file: '/var/log/mysql/mysql-slow.log'
+
+# limit settings.
+symbolic_links: '0'
+character_set_server: 'utf8'
+collation_server: 'utf8_general_ci'
+init_connect: '"set names utf8"'
+max_connections: '1000'
+max_connect_errors: '1000'
+wait_timeout: '31536000'
+interactive_timeout: '31536000'
+default_character_set: 'utf8'
+
+# Replication settings.
+master: {server_id: '1', auto_increment_offset: '1', auto_increment_increment: '2'}
+slave: {server_id: '2', auto_increment_offset: '2', auto_increment_increment: '2'}
+log_bin: 'mysql-bin'
+log_bin_index: 'mysql-bin.index'
+binlog_format: 'MIXED'
+log_slave_updates: 'true'
+relay_log: 'relay-bin'
+relay_log_index: 'salve-relay-bin.index'
+expire_logs_days: '10'
+max_binlog_size: '1G'
+max_relay_log_size: '1G'
+slave-skip-errors: 'ddl_exist_errors'
+slave-net-timeout: '30'
+log_bin_trust_function_creators: '1'
+
+# Not sync databases.
+ignore_db:
+  - 'sys'
+  - 'mysql'
+  - 'information_schema'
+  - 'performance_schema'

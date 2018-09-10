@@ -1,0 +1,35 @@
+---
+- hosts: mongodb
+  tasks:
+  - name: Check device is mounted
+    shell: df -h | grep {{ glusterfs_disk }} | awk '{print $6}'
+    #register: mount_result
+    #ignore_errors: true
+    #changed_when: false
+#    - debug:
+#        msg: 'groups: {{ groups }}'
+
+#    - debug:
+#        msg: 'groups.glusterfs: {{ groups.glusterfs }}'
+
+#    - debug:
+#        msg: 'play_hosts: {{ play_hosts }}'
+
+#    - debug:
+#        msg: 'inventory_hostname: {{ inventory_hostname }}'
+
+#    - debug:
+#        msg: 'inventory_hostname_short: {{ inventory_hostname_short }}'
+
+#    - debug:
+#        msg: 'ansible_play_batch: {{ ansible_play_batch  }}'
+
+#    - debug:
+#        msg: 'ansible_play_hosts: {{ ansible_play_hosts }}'
+
+#    - debug:
+#        msg: 'group_names: {{ group_names }}'
+
+#    - name:  nodename
+#      debug:
+#        msg: '{{ ansible_nodename }}'

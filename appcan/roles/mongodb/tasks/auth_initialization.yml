@@ -1,0 +1,89 @@
+---
+
+- name: Use init mongod.conf for auth initalization
+  template:
+    src: mongod_init.conf.j2
+    dest: '{{ mongodb_config_file }}'
+    owner: root
+    group: root
+    mode: 0644
+    force: '{{ overwrite_mongodb_configuration }}'
+
+- name: Restart mongodb service
+  service: name=mongod state=restarted
+
+- name: Ensure mongodb port is listening
+  wait_for:
+    host: '127.0.0.1'
+    port: '{{ mongodb_net_port }}'
+    delay: '1'
+    state: started
+
+- name: create administrative user
+  mongodb_user:
+    database: admin
+    name: '{{ item.name }}'
+    password: '{{ item.password }}'
+    update_password: '{{ mongodb_user_update_password }}'
+    roles: '{{ item.roles }}'
+    login_port: '{{ mongodb_net_port }}'
+  with_items:
+   - {
+      name: '{{ mongodb_user_admin_name }}',
+      password: '{{ mongodb_user_admin_password }}',
+      roles: 'userAdminAnyDatabase,clusterAdmin'
+     }
+  no_log: true
+
+- name: create root user
+  mongodb_user:
+    database: admin
+    name: '{{ item.name }}'
+    password: '{{ item.password }}'
+    update_password: '{{ mongodb_user_update_password }}'
+    roles: '{{ item.roles }}'
+    login_port: '{{ mongodb_net_port }}'
+  with_items:
+    - {
+      name: '{{ mongodb_root_admin_name }}',
+      password: '{{ mongodb_root_admin_password }}',
+      roles: 'root'
+      }
+  no_log: true
+
+- name: create backup user
+  mongodb_user:
+    database: admin
+    name: '{{ item.name }}'
+    password: '{{ item.password }}'
+    update_password: '{{ mongodb_user_update_password }}'
+    roles: '{{ item.roles }}'
+    login_port: '{{ mongodb_net_port }}'
+  with_items:
+    - {
+      name: '{{ mongodb_root_backup_name }}',
+      password: '{{ mongodb_root_backup_password }}',
+      roles: 'backup,clusterMonitor'
+      }
+  no_log: true
+
+- name: Copy mongodb configuration
+  template:
+    src: mongod.conf.j2
+    dest: '{{ mongodb_config_file }}'
+    owner: root
+    group: root
+    mode: 0644
+    force: '{{ overwrite_mongodb_configuration }}'
+  notify: restart mongodb
+
+- name: Restart mongodb service
+  service: name=mongod state=restarted
+
+- name: Ensure mongodb port is listening
+  wait_for:
+    host: "{{ item }}"
+    port: "{{ mongodb_net_port }}"
+    timeout: 120
+  with_items: "{{ mongodb_net_bindip.split(',') | map('replace', '0.0.0.0', '127.0.0.1') | list }}"
+

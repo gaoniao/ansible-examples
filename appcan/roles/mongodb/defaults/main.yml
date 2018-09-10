@@ -1,0 +1,104 @@
+---
+
+# Mongodb packages.
+mongodb_packages:
+  - 'mongodb-org'
+  - 'numactl'
+  - 'python-pymongo'
+
+# Mongodb user.
+mongodb_user: 'mongod'
+mongodb_uid: '997'
+mongodb_group: 'mongod'
+mongodb_gid: '995'
+
+# Mongodb path.
+mongodb_db_path: '/var/lib/mongo'
+mongodb_log_path: '/var/log/mongodb'
+mongodb_pidfile_path: '/var/run/mongodb'
+
+# Mongodb configuration settings.
+overwrite_mongodb_configuration: true
+mongodb_config_file: '/etc/mongod.conf'
+
+# Mongodb net options.
+mongodb_net_port: '27017'
+mongodb_net_bindip: '{{ ansible_default_ipv4.address }}'
+mongodb_net_ipv6_enabled: false
+mongodb_net_maxconns: '65536'
+mongodb_net_socket_enabled: true
+mongodb_net_socket_path: '/tmp'
+mongodb_net_socket_permissions: '0700'
+mongodb_net_http_enabled: false
+mongodb_net_ssl_enabled: false
+mongodb_net_ssl_mode: ''
+mongodb_net_ssl_pemfile: ''
+
+# Mongodb process management options.
+mongodb_processmanagement_fork_enabled: true
+mongodb_processmanagement_pidfile_path: '{{ mongodb_pidfile_path }}/mongod.pid'
+
+# Mongodb security options.
+mongodb_security_authorization: 'disabled'
+mongodb_security_authmode: 'keyFile'
+mongodb_security_keyfile: '/etc/mongodb-keyfile'
+
+# Mongodb storage options.
+mongodb_storage_dbpath: '{{ mongodb_db_path }}'
+mongodb_storage_journal_enabled: true
+mongodb_storage_engine: 'wiredTiger'
+
+mongodb_storage_mmapv1_quota_enforced: false
+mongodb_storage_mmapv1_prealloc: true
+mongodb_storage_mmapv1_quota_maxfiles: '8'
+mongodb_storage_mmapv1_smallfiles: false
+
+mongodb_storage_wiredtiger_cachesize: ''
+mongodb_storage_wiredtiger_dirforindexes: false
+mongodb_storage_wiredtiger_indexconfig: true
+
+# Mongodb system log options.
+mongodb_systemlog_verbosity: '0'
+mongodb_systemlog_quiet: false
+mongodb_systemlog_destination: 'file'
+mongodb_systemlog_path: '{{ mongodb_log_path }}/mongod.log'
+mongodb_systemlog_logappend: true
+mongodb_systemlog_logrotate: 'rename'
+
+# Mongodb replication options.
+mongodb_replication_enabled: true
+mongodb_replication_replset: 'mongo.test'
+mongodb_replication_replindexprefetch: 'all'
+mongodb_replication_oplogsize: '128'
+
+# Mongodb key file. --> openssl rand -base64 741
+mongodb_keyfile_content: |
+  xxfOV3LY4aI9lv1mTFqGp/tjJtMF7xmVWbr1SDO6ZFqnV42AlEnOak/fuYuvyyL6
+  iub2XPwzFhIfqlx0hozMF6ZZw3cGbYJQYBjgETzMYxhrVYCBbweV9vARdr5Env1Z
+  xj5MAnzGSbWYd8wKeaA11u1iBY3VSy8QbcYPqPwwyHNykaFQq6X9Uki67vG+tkeQ
+  xA2IPI2sTjQ3Pl6ETbIsFr5Bw5RaWJsvzpEU6AJaoD+2BYf93VbREuiDFnFy7rbC
+  5783vuyapHLuhGgXpqESQYE0y8tOIAdlsfeka/Dl2VgT+ki0vUxI4B4urBhfgL2m
+  hcEqMjMhOpmYDDuipRwT4B1CEcA6hu2j0huYZGvOloJNSYIG/pVq+XdCWerW6qQv
+  PHlyqdR0G4FG5fm6ewCvaMxOP5J1q9wIw9EQlGeZD7b5Kqeu3osuXVabJnFT+RmS
+  t4IUZd/C4qcJPlMbdi+wUmFWslBOhqyl1ppx44g6fgd7kwZjpE0Y0foRKsNvvQtz
+  OsIL1pBQ6w8SLOAaSFUeoOFG/JTiTWZ7Uyrw90GUHtepiKaa2x9cxlf0VSaiWKd8
+  JwezA/ACQF1fQL95FEMMD06cBiXFk8MfgAadfoDLRUIMngx/PGC2IOCZIyKZiJMt
+  2UdeBtiM6CQ33EelXsPmzLo5yaYpNp19VP8fC0xY9IoDAhNRirAgc0Vrb5p+nqOu
+  MJXIakX2ttvludYXfLh85nWZqh5/O//mmJdVXnthR9JY9Bi3gCR2I9QFI/FsAAGq
+  7gXpq+OoWlJ6429dV9W0Vntjn01MocIJbdcnDLOIrvgM0kY2ZBcltgbTLSlHOwq8
+  +4yO3Lhe2fB/5bdIlCm3A2+axCm48pVXIjTiiKkummUZBf+VZNsP64wD1yyY3rAC
+  nK1xl43iGulkDprNTC3tQYmNMi4aE1NnDe3No4gViVkLMeDZwp5o/JSyy60Pspqh
+  X/piWUG28/ZTeJ0SIA0eW+HQ/qUV
+
+# names and passwords for administrative users
+mongodb_user_update_password: 'always'
+
+mongodb_user_admin_name: 'admin'
+mongodb_user_admin_password: '123456'
+
+mongodb_root_admin_name: 'root'
+mongodb_root_admin_password: '123456'
+
+mongodb_root_backup_name: 'backup'
+mongodb_root_backup_password: '123456'
+

@@ -1,0 +1,10 @@
+---
+
+- name: mounting gluster volumes
+  mount:
+    name: "{{ item.mountpoint }}"
+    src: "{{ item.src }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.opts }}"
+    state: "{{ item.state }}"
+  with_items: '{{ glusterfs_client_mounts }}'

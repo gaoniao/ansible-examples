@@ -1,0 +1,14 @@
+---
+
+- name: Copy redis sentinel configuration file
+  template:
+    src: redis-sentinel.conf.j2
+    dest: '{{ redis_sentinel_config_file }}'
+    mode: 0640
+    owner: '{{ redis_user }}'
+    group: root
+    force: '{{ overwrite_redis_sentinel_configuration }}'
+  notify: restart redis sentinel
+
+- name: Ensure Redis sentinel is running and enabled on boot
+  service: name=redis-sentinel state=started enabled=yes

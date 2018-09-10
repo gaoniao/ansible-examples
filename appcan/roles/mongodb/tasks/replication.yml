@@ -1,0 +1,25 @@
+---
+
+#- name: Set mongodb role fact
+#  set_fact:
+#    arbiteronly: >-
+#     {%- for host in play_hosts -%}
+#       {%- if inventory_hostname == host -%}
+#        {%- if loop.index0 == 0 -%}
+#        false
+#        {%- endif -%}
+#        {%- endif -%}
+#     {%- endfor -%}
+
+
+
+- block:
+  - name: copy repset script to agent
+    template:
+      src: 'mongodb_replication.script.j2'
+      dest: '/tmp/mongodb_replication.script'
+      force: true
+
+  - name: Config repset
+    shell: 'mongo --host {{ mongodb_net_bindip }} --port {{ mongodb_net_port }} admin < /tmp/mongodb_replication.script'
+  run_once: true

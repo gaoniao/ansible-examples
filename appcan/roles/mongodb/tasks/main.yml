@@ -1,0 +1,19 @@
+---
+
+- name: Import installation tasks
+  import_tasks: install.yml
+  tags: mongodb
+
+- name: Import configuration tasks
+  import_tasks: configure.yml
+  tags: mongodb
+
+- name: Import replication tasks
+  import_tasks: replication.yml
+  when: mongodb_replication_enabled
+  tags: mongodb
+
+- name: Import init auth tasks
+  import_tasks: auth_initialization.yml
+  tags: mongodb
+  when: mongodb_security_authorization == 'enabled'

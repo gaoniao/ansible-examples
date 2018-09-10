@@ -1,0 +1,1 @@
+包含common、glusterfs、mongodb、mysql、nginx、redis集群搭建。

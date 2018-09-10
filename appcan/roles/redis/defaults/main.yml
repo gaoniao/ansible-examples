@@ -1,0 +1,145 @@
+---
+# Redis packages.
+redis_packages:
+  - 'redis'
+
+# Redis user.
+redis_user: 'redis'
+redis_uid: '998'
+redis_group: 'redis'
+redis_gid: '996'
+
+# Redis path.
+redis_dbdir: '/var/lib/redis'
+redis_logdir: '/var/log/redis'
+
+# Redis configuration settings.
+overwrite_redis_configuration: yes
+redis_config_file: '/etc/redis.conf'
+
+# Redis sentinel configuration settings.
+overwrite_redis_sentinel_configuration: yes
+redis_sentinel_config_file: '/etc/redis-sentinel.conf'
+
+# Network settings.
+redis_port: '6379'
+redis_bind_interface: '0.0.0.0'
+redis_protected_mode: 'yes'
+redis_tcp_backlog: '511'
+
+# General setting.
+redis_daemonize: 'yes'
+redis_supervised: 'no'
+redis_pidfile: '/var/run/redis_6379.pid'
+redis_loglevel: 'notice'
+redis_logfile: '/var/log/redis/redis.log'
+redis_syslog_enabled: 'no'
+redis_syslog_ident: 'redis'
+redis_syslog_facility: 'local0'
+redis_databases: '16'
+
+# Snapshotting settings.
+redis_rdb_save_enabled: yes
+redis_rdb_save_rules:
+  - {second: '900', key: '1'}
+  - {second: '300', key: '10'}
+  - {second: '60', key: '10000'}
+redis_stop_writes_on_bgsave_error: 'yes'
+redis_rdbcompression: 'yes'
+redis_rdbchecksum: 'yes'
+redis_dbfilename: 'dump.rdb'
+
+
+
+# Replication settings.
+redis_slave_enabled: yes
+redis_master_host: '192.168.198.21'
+redis_master_port: '6379'
+redis_slave_number: '2'
+redis_masterauth: '123456'
+redis_slave_serve_stale_data: 'yes'
+redis_slave_read_only: 'yes'
+redis_repl_diskless_sync: 'no'
+redis_repl_diskless_sync_delay: '5'
+redis_repl_ping_slave_period: '10'
+redis_repl_timeout: '60'
+redis_repl_disable_tcp_nodelay: 'no'
+redis_repl_backlog_size: '1mb'
+repl_backlog_ttl: '3600'
+redis_slave_priority: '100'
+redis_min_slaves_to_write: '0'
+redis_min_slaves_max_lag: '0'
+#redis_slave_announce: {ip: '', port: ''}
+redis_slave_announce: ''
+
+# Security settings.
+redis_requirepass: '123456'
+#redis_rename_commands:
+#  - {old: 'CONFIG', new: 'b840fc02d524045429941cc15f59e41cb7be6c52'}
+redis_rename_commands: ''
+
+# Limits settings.
+redis_maxclients: '10000'
+#redis_maxmemory: '<bytes>'
+redis_maxmemory: ''
+redis_maxmemory_policy: 'noeviction'
+redis_maxmemory_samples: '5'
+
+# AOF settings.
+redis_aof_enabled: no
+redis_appendfilename: '"appendonly.aof"'
+redis_appendfsync: 'everysec'
+redis_no_appendfsync_on_rewrite: 'no'
+redis_auto_aof_rewrite_percentage: '100'
+redis_auto_aof_rewrite_min_size: '64mb'
+redis_aof_load_truncated: 'yes'
+
+# Cluster settings.
+redis_cluster_enabled: no
+redis_cluster_config_file: 'nodes.conf'
+redis_cluster_node_timeout: '1500'
+redis_cluster_slave_validity_factor: '10'
+redis_cluster_migration_barrier: '1'
+redis_cluster_require_full_coverage: 'yes'
+
+# Slow log settings.
+redis_slowlog_log_slower_than: '10000'
+redis_slowlog_max_len: '128'
+
+# latency monitor settings.
+redis_latency_monitor_threshold: '0'
+
+# Notify settings.
+redis_notify_keyspace_events: '""'
+
+# Advanced settings.
+redis_hash_max_ziplist_entries: '512'
+redis_hash_max_ziplist_value: '64'
+
+redis_list_max_ziplist_size: '-2'
+redis_list_compress_depth: '0'
+redis_set_max_intset_entries: '512'
+redis_zset_max_ziplist_entries: '128'
+redis_zset_max_ziplist_value: '64'
+redis_hll_sparse_max_bytes: '3000'
+redis_activerehashing: 'yes'
+redis_client_output_buffer_limits:
+  - {client: 'normal', hard_limit: '0', soft_limit: '0', soft_seconds: '0'}
+  - {client: 'slave', hard_limit: '256mb', soft_limit: '64mb', soft_seconds: '60'}
+  - {client: 'pubsub', hard_limit: '32mb', soft_limit: '8mb', soft_seconds: '60'}
+redis_hz: '10'
+redis_aof_rewrite_incremental_fsync: 'yes'
+
+# Sentinel settings.
+redis_sentinel_enabled: yes
+redis_sentinel_bind_interface: '0.0.0.0'
+redis_sentinel_protected_mode: 'yes'
+redis_sentinel_dir: '/tmp'
+redis_sentinel_port: '26379'
+redis_sentinel_quorum: '2'
+redis_down_after_milliseconds: '5000'
+redis_sentinel_failover_timeout: '5000'
+redis_sentinel_parallel_syncs: '1'
+redis_sentinel_loglevel: 'notice'
+redis_sentinel_logfile: 'sentinel.log'
+
